@@ -1,10 +1,6 @@
-
-
 # BiteSpeed Backend Task – Identity Reconciliation
 
-
 ## Overview
-
 This project implements the **Identity Reconciliation service** required in the BiteSpeed backend assignment.
 
 The goal of this service is to **identify and link multiple contact records belonging to the same customer** based on shared **email or phone number**.
@@ -13,70 +9,70 @@ Customers may place orders using different emails or phone numbers. This service
 
 ---
 
-# Live Demo
+## Live Demo
 
-Frontend Tester
+**Frontend Tester**
 
 https://bitespeed-kq1t.onrender.com
 
-API Endpoint
+**API Endpoint**
 
 POST https://bitespeed-kq1t.onrender.com/identify
 
 ---
 
-# Tech Stack
+## Tech Stack
 
-Backend
-Node.js
-Express.js
+### Backend
+- Node.js
+- Express.js
 
-Database
-PostgreSQL (Neon)
-Prisma ORM
+### Database
+- PostgreSQL (Neon)
+- Prisma ORM
 
-Deployment
-Render
+### Deployment
+- Render
 
-Frontend (API tester)
-HTML
-CSS
-JavaScript
+### Frontend (API Tester)
+- HTML
+- CSS
+- JavaScript
 
 ---
 
-# Database Schema
+## Database Schema
 
 The service uses a **Contact table** to store identity records.
 
-| Field          | Type                |
-| -------------- | ------------------- |
-| id             | Int                 |
-| phoneNumber    | String              |
-| email          | String              |
-| linkedId       | Int                 |
+| Field | Type |
+|------|------|
+| id | Int |
+| phoneNumber | String |
+| email | String |
+| linkedId | Int |
 | linkPrecedence | primary / secondary |
-| createdAt      | DateTime            |
-| updatedAt      | DateTime            |
-| deletedAt      | DateTime            |
+| createdAt | DateTime |
+| updatedAt | DateTime |
+| deletedAt | DateTime |
 
 ### Identity Rules
 
-* The **oldest contact is always the primary contact**
-* New contacts linked to the same identity become **secondary contacts**
-* Contacts sharing **email OR phone number** belong to the same identity
+- The **oldest contact is always the primary contact**
+- New contacts linked to the same identity become **secondary contacts**
+- Contacts sharing **email OR phone number** belong to the same identity
 
 ---
 
-# API Endpoint
+## API Endpoint
 
-## POST /identify
+### POST /identify
 
 This endpoint receives contact information and returns the consolidated identity.
 
 ### Request Body
 
-```
+```json
 {
  "email": "string",
  "phoneNumber": "string"
@@ -87,13 +83,9 @@ Both fields are optional but **at least one must be provided**.
 
 ---
 
-# Example Request
+## Example Request
 
-```
-POST /identify
-```
-
-```
+```json
 {
  "email": "mcfly@hillvalley.edu",
  "phoneNumber": "123456"
@@ -102,9 +94,9 @@ POST /identify
 
 ---
 
-# Example Response
+## Example Response
 
-```
+```json
 {
  "contact": {
   "primaryContactId": 1,
@@ -122,41 +114,41 @@ POST /identify
 
 ---
 
-# Identity Reconciliation Logic
+## Identity Reconciliation Logic
 
-1. If no existing contact matches the request
+1. If no existing contact matches the request  
    → Create a **new primary contact**
 
-2. If email or phone already exists
+2. If email or phone already exists  
    → Link the contact to the existing **primary identity**
 
-3. If new information appears
+3. If new information appears  
    → Create a **secondary contact**
 
-4. If two primary contacts become connected
-   → The **oldest contact remains primary**
+4. If two primary contacts become connected  
+   → The **oldest contact remains primary**  
    → The newer one becomes **secondary**
 
 ---
 
-# Frontend Tester
+## Frontend Tester
 
 A simple frontend UI is included to test the API.
 
 Users can:
 
-* Enter email
-* Enter phone number
-* Click **Identify**
-* View the consolidated identity response
+- Enter email
+- Enter phone number
+- Click **Identify**
+- View the consolidated identity response
 
-Access it here
+Access it here:
 
 https://bitespeed-kq1t.onrender.com
 
 ---
 
-# Running Locally
+## Running Locally
 
 Clone the repository
 
@@ -210,7 +202,7 @@ http://localhost:3000
 
 ---
 
-# Project Structure
+## Project Structure
 
 ```
 bitespeed-task
@@ -235,7 +227,7 @@ bitespeed-task
 
 ---
 
-# Deployment
+## Deployment
 
 The application is deployed using **Render**.
 
@@ -243,18 +235,18 @@ Render automatically redeploys the service whenever changes are pushed to GitHub
 
 ---
 
-# Author
+## Author
 
 Khushboo Chaurasiya
 
 ---
 
-# Assignment Submission
+## Assignment Submission
 
-Repository
+**Repository**
 
 https://github.com/Khushboo-25/BiteSpeed
 
-Hosted API
+**Hosted API**
 
 https://bitespeed-kq1t.onrender.com
