@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <title>BiteSpeed Identity Tester</title>
 
 <style>
 
 body{
-font-family:Arial;
-background:#f5f5f5;
+font-family: Arial;
+background:#f4f4f4;
 padding:40px;
 }
 
@@ -25,20 +26,16 @@ width:100%;
 padding:10px;
 margin:10px 0;
 border:1px solid #ccc;
-border-radius:4px;
+border-radius:5px;
 }
 
 button{
+padding:10px 15px;
 background:#007bff;
 color:white;
-padding:10px 15px;
 border:none;
 border-radius:5px;
 cursor:pointer;
-}
-
-button:hover{
-background:#0056b3;
 }
 
 pre{
@@ -48,14 +45,13 @@ border-radius:5px;
 }
 
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-<h2>BiteSpeed Identity API Tester</h2>
+<h2>BiteSpeed Identity API</h2>
 
 <label>Email</label>
 <input id="email" placeholder="Enter email">
@@ -63,7 +59,7 @@ border-radius:5px;
 <label>Phone Number</label>
 <input id="phone" placeholder="Enter phone number">
 
-<button id="identifyBtn">Identify</button>
+<button onclick="identify()">Identify</button>
 
 <h3>Response</h3>
 
@@ -73,37 +69,28 @@ border-radius:5px;
 
 <script>
 
-document.getElementById("identifyBtn").addEventListener("click", async () => {
+async function identify(){
 
-const email = document.getElementById("email").value;
-const phone = document.getElementById("phone").value;
+const email=document.getElementById("email").value;
+const phone=document.getElementById("phone").value;
 
-try{
-
-const response = await fetch("/identify", {
-method: "POST",
-headers: {
-"Content-Type": "application/json"
+const response=await fetch("/identify",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
 },
-body: JSON.stringify({
+body:JSON.stringify({
 email: email || null,
 phoneNumber: phone || null
 })
 });
 
-const data = await response.json();
+const data=await response.json();
 
-document.getElementById("result").textContent =
-JSON.stringify(data, null, 2);
-
-}catch(err){
-
-document.getElementById("result").textContent =
-"Error connecting to API";
+document.getElementById("result").textContent=
+JSON.stringify(data,null,2);
 
 }
-
-});
 
 </script>
 
