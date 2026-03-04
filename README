@@ -13,11 +13,11 @@ Customers may place orders using different emails or phone numbers. This service
 
 **Frontend Tester**
 
-https://bitespeed-kq1t.onrender.com
+https://your-app-name.onrender.com
 
 **API Endpoint**
 
-POST https://bitespeed-kq1t.onrender.com/identify
+POST https://your-app-name.onrender.com/identify
 
 ---
 
@@ -144,7 +144,7 @@ Users can:
 
 Access it here:
 
-https://bitespeed-kq1t.onrender.com
+https://your-app-name.onrender.com
 
 ---
 
@@ -153,7 +153,7 @@ https://bitespeed-kq1t.onrender.com
 Clone the repository
 
 ```
-git clone https://github.com/Khushboo-25/BiteSpeed.git
+git clone https://github.com/yourusername/bitespeed-task.git
 ```
 
 Go to project folder
@@ -245,8 +245,8 @@ Khushboo Chaurasiya
 
 **Repository**
 
-https://github.com/Khushboo-25/BiteSpeed
+https://github.com/yourusername/bitespeed-task
 
 **Hosted API**
 
-https://bitespeed-kq1t.onrender.com
+https://your-app-name.onrender.com/identify
