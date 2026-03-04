@@ -1,1 +1,259 @@
 POST https://bitespeed-kq1t.onrender.com
+
+# BiteSpeed Backend Task – Identity Reconciliation
+
+## Overview
+
+This project implements the **Identity Reconciliation service** required in the BiteSpeed backend assignment.
+
+The goal of this service is to **identify and link multiple contact records belonging to the same customer** based on shared **email or phone number**.
+
+Customers may place orders using different emails or phone numbers. This service consolidates those records into one identity.
+
+---
+
+# Live Demo
+
+Frontend Tester
+
+https://bitespeed-kq1t.onrender.com
+
+API Endpoint
+
+POST https://bitespeed-kq1t.onrender.com/identify
+
+---
+
+# Tech Stack
+
+Backend
+Node.js
+Express.js
+
+Database
+PostgreSQL (Neon)
+Prisma ORM
+
+Deployment
+Render
+
+Frontend (API tester)
+HTML
+CSS
+JavaScript
+
+---
+
+# Database Schema
+
+The service uses a **Contact table** to store identity records.
+
+| Field          | Type                |
+| -------------- | ------------------- |
+| id             | Int                 |
+| phoneNumber    | String              |
+| email          | String              |
+| linkedId       | Int                 |
+| linkPrecedence | primary / secondary |
+| createdAt      | DateTime            |
+| updatedAt      | DateTime            |
+| deletedAt      | DateTime            |
+
+### Identity Rules
+
+* The **oldest contact is always the primary contact**
+* New contacts linked to the same identity become **secondary contacts**
+* Contacts sharing **email OR phone number** belong to the same identity
+
+---
+
+# API Endpoint
+
+## POST /identify
+
+This endpoint receives contact information and returns the consolidated identity.
+
+### Request Body
+
+```
+{
+ "email": "string",
+ "phoneNumber": "string"
+}
+```
+
+Both fields are optional but **at least one must be provided**.
+
+---
+
+# Example Request
+
+```
+POST /identify
+```
+
+```
+{
+ "email": "mcfly@hillvalley.edu",
+ "phoneNumber": "123456"
+}
+```
+
+---
+
+# Example Response
+
+```
+{
+ "contact": {
+  "primaryContactId": 1,
+  "emails": [
+   "lorraine@hillvalley.edu",
+   "mcfly@hillvalley.edu"
+  ],
+  "phoneNumbers": [
+   "123456"
+  ],
+  "secondaryContactIds": [2]
+ }
+}
+```
+
+---
+
+# Identity Reconciliation Logic
+
+1. If no existing contact matches the request
+   → Create a **new primary contact**
+
+2. If email or phone already exists
+   → Link the contact to the existing **primary identity**
+
+3. If new information appears
+   → Create a **secondary contact**
+
+4. If two primary contacts become connected
+   → The **oldest contact remains primary**
+   → The newer one becomes **secondary**
+
+---
+
+# Frontend Tester
+
+A simple frontend UI is included to test the API.
+
+Users can:
+
+* Enter email
+* Enter phone number
+* Click **Identify**
+* View the consolidated identity response
+
+Access it here
+
+https://bitespeed-kq1t.onrender.com
+
+---
+
+# Running Locally
+
+Clone the repository
+
+```
+git clone https://github.com/Khushboo-25/BiteSpeed.git
+```
+
+Go to project folder
+
+```
+cd bitespeed-task
+```
+
+Install dependencies
+
+```
+npm install
+```
+
+Setup environment variables
+
+Create a `.env` file
+
+```
+DATABASE_URL=your_postgresql_connection_string
+```
+
+Run database migration
+
+```
+npx prisma migrate dev
+```
+
+Generate Prisma client
+
+```
+npx prisma generate
+```
+
+Start the server
+
+```
+npm run dev
+```
+
+Open in browser
+
+```
+http://localhost:3000
+```
+
+---
+
+# Project Structure
+
+```
+bitespeed-task
+│
+├── src
+│   ├── controllers
+│   │   └── identifyController.js
+│   ├── routes
+│   │   └── identify.js
+│   ├── prisma.js
+│   └── server.js
+│
+├── prisma
+│   └── schema.prisma
+│
+├── public
+│   └── index.html
+│
+├── package.json
+└── README.md
+```
+
+---
+
+# Deployment
+
+The application is deployed using **Render**.
+
+Render automatically redeploys the service whenever changes are pushed to GitHub.
+
+---
+
+# Author
+
+Khushboo Chaurasiya
+
+---
+
+# Assignment Submission
+
+Repository
+
+https://github.com/Khushboo-25/BiteSpeed
+
+Hosted API
+
+https://bitespeed-kq1t.onrender.com
