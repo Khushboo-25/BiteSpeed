@@ -1,23 +1,27 @@
 const prisma = require("../prisma");
 
 exports.identify = async (req, res) => {
+
   const { email, phoneNumber } = req.body;
 
   if (!email && !phoneNumber) {
     return res.status(400).json({ error: "email or phoneNumber required" });
   }
 
-  // Step 1: find contacts matching email or phone
+  // Find matching contacts
   const matched = await prisma.contact.findMany({
     where: {
       OR: [
-        { email: email },
-        { phoneNumber: phoneNumber }
+        { email: email || undefined },
+        { phoneNumber: phoneNumber || undefined }
       ]
+    },
+    orderBy: {
+      createdAt: "asc"
     }
   });
 
-  // Step 2: if none exist → create primary
+  // No existing contact
   if (matched.length === 0) {
 
     const newContact = await prisma.contact.create({
@@ -31,23 +35,23 @@ exports.identify = async (req, res) => {
     return res.json({
       contact: {
         primaryContactId: newContact.id,
-        emails: newContact.email ? [newContact.email] : [],
-        phoneNumbers: newContact.phoneNumber ? [newContact.phoneNumber] : [],
+        emails: email ? [email] : [],
+        phoneNumbers: phoneNumber ? [phoneNumber] : [],
         secondaryContactIds: []
       }
     });
   }
 
-  // Step 3: find primary contact
+  // Find primary contact (oldest)
   let primary = matched.find(c => c.linkPrecedence === "primary");
 
   if (!primary) {
-    primary = await prisma.contact.findFirst({
+    primary = await prisma.contact.findUnique({
       where: { id: matched[0].linkedId }
     });
   }
 
-  // Step 4: fetch ALL contacts of that identity
+  // Fetch all contacts belonging to this identity
   const allContacts = await prisma.contact.findMany({
     where: {
       OR: [
@@ -64,12 +68,13 @@ exports.identify = async (req, res) => {
   allContacts.forEach(c => {
     if (c.email) emails.add(c.email);
     if (c.phoneNumber) phones.add(c.phoneNumber);
+
     if (c.linkPrecedence === "secondary") {
       secondaryIds.push(c.id);
     }
   });
 
-  // Step 5: create secondary if new info appears
+  // Create secondary if new information
   if (
     (email && !emails.has(email)) ||
     (phoneNumber && !phones.has(phoneNumber))
@@ -90,7 +95,6 @@ exports.identify = async (req, res) => {
     if (phoneNumber) phones.add(phoneNumber);
   }
 
-  // Step 6: final response
   res.json({
     contact: {
       primaryContactId: primary.id,
@@ -99,4 +103,5 @@ exports.identify = async (req, res) => {
       secondaryContactIds: secondaryIds
     }
   });
+
 };
