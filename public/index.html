@@ -38,11 +38,10 @@ border-radius:5px;
 cursor:pointer;
 }
 
-pre{
-background:#eee;
-padding:15px;
-border-radius:5px;
+button:hover{
+background:#0056b3;
 }
+
 .result-card{
 margin-top:20px;
 padding:20px;
@@ -57,6 +56,12 @@ margin-bottom:10px;
 
 .result-card ul{
 padding-left:20px;
+}
+
+.error{
+margin-top:20px;
+color:red;
+font-weight:bold;
 }
 
 </style>
@@ -86,25 +91,37 @@ padding-left:20px;
 
 async function identify(){
 
-const email=document.getElementById("email").value;
-const phone=document.getElementById("phone").value;
+const email=document.getElementById("email").value.trim();
+const phone=document.getElementById("phone").value.trim();
+const resultDiv=document.getElementById("result");
+
+resultDiv.innerHTML="Loading...";
+
+const payload={};
+
+if(email) payload.email=email;
+if(phone) payload.phoneNumber=phone;
+
+try{
 
 const response=await fetch("/identify",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
 },
-body:JSON.stringify({
-email: email || null,
-phoneNumber: phone || null
-})
+body:JSON.stringify(payload)
 });
 
 const data=await response.json();
 
+if(data.error){
+resultDiv.innerHTML=`<div class="error">Error: ${data.error}</div>`;
+return;
+}
+
 const contact=data.contact;
 
-let html=`
+resultDiv.innerHTML=`
 <div class="result-card">
 
 <h3>Primary Contact ID: ${contact.primaryContactId}</h3>
@@ -127,9 +144,14 @@ ${contact.secondaryContactIds.map(id=>`<li>${id}</li>`).join("")}
 </div>
 `;
 
-document.getElementById("result").innerHTML=html;
+}catch(err){
+
+resultDiv.innerHTML=`<div class="error">Server error</div>`;
 
 }
+
+}
+
 </script>
 
 </body>
