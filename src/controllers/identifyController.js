@@ -53,13 +53,16 @@ exports.identify = async (req, res) => {
 
   // Fetch all contacts belonging to this identity
   const allContacts = await prisma.contact.findMany({
-    where: {
-      OR: [
-        { id: primary.id },
-        { linkedId: primary.id }
-      ]
-    }
-  });
+  where: {
+    OR: [
+      { id: primary.id },
+      { linkedId: primary.id }
+    ]
+  },
+  orderBy: {
+    createdAt: "asc"
+  }
+});
 
   const emails = new Set();
   const phones = new Set();

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BiteSpeed Identity Tester</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f5f5f5;
+padding:40px;
+}
+
+.container{
+background:white;
+padding:25px;
+max-width:500px;
+margin:auto;
+border-radius:8px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+input{
+width:100%;
+padding:10px;
+margin:10px 0;
+border:1px solid #ccc;
+border-radius:4px;
+}
+
+button{
+background:#007bff;
+color:white;
+padding:10px 15px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#0056b3;
+}
+
+pre{
+background:#eee;
+padding:15px;
+border-radius:5px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>BiteSpeed Identity API Tester</h2>
+
+<label>Email</label>
+<input id="email" placeholder="Enter email">
+
+<label>Phone Number</label>
+<input id="phone" placeholder="Enter phone number">
+
+<button id="identifyBtn">Identify</button>
+
+<h3>Response</h3>
+
+<pre id="result"></pre>
+
+</div>
+
+<script>
+
+document.getElementById("identifyBtn").addEventListener("click", async () => {
+
+const email = document.getElementById("email").value;
+const phone = document.getElementById("phone").value;
+
+try{
+
+const response = await fetch("/identify", {
+method: "POST",
+headers: {
+"Content-Type": "application/json"
+},
+body: JSON.stringify({
+email: email || null,
+phoneNumber: phone || null
+})
+});
+
+const data = await response.json();
+
+document.getElementById("result").textContent =
+JSON.stringify(data, null, 2);
+
+}catch(err){
+
+document.getElementById("result").textContent =
+"Error connecting to API";
+
+}
+
+});
+
+</script>
+
+</body>
+</html>
