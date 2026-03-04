@@ -43,6 +43,21 @@ background:#eee;
 padding:15px;
 border-radius:5px;
 }
+.result-card{
+margin-top:20px;
+padding:20px;
+background:#f8f9fa;
+border-radius:8px;
+border:1px solid #ddd;
+}
+
+.result-card h3{
+margin-bottom:10px;
+}
+
+.result-card ul{
+padding-left:20px;
+}
 
 </style>
 </head>
@@ -63,7 +78,7 @@ border-radius:5px;
 
 <h3>Response</h3>
 
-<pre id="result"></pre>
+<div id="result"></div>
 
 </div>
 
@@ -87,11 +102,34 @@ phoneNumber: phone || null
 
 const data=await response.json();
 
-document.getElementById("result").textContent=
-JSON.stringify(data,null,2);
+const contact=data.contact;
+
+let html=`
+<div class="result-card">
+
+<h3>Primary Contact ID: ${contact.primaryContactId}</h3>
+
+<h4>Emails</h4>
+<ul>
+${contact.emails.map(e=>`<li>${e}</li>`).join("")}
+</ul>
+
+<h4>Phone Numbers</h4>
+<ul>
+${contact.phoneNumbers.map(p=>`<li>${p}</li>`).join("")}
+</ul>
+
+<h4>Secondary Contact IDs</h4>
+<ul>
+${contact.secondaryContactIds.map(id=>`<li>${id}</li>`).join("")}
+</ul>
+
+</div>
+`;
+
+document.getElementById("result").innerHTML=html;
 
 }
-
 </script>
 
 </body>
